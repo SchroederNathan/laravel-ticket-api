@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests\Api\V1;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class ReplaceTicketRequest extends FormRequest
+class ReplaceTicketRequest extends BaseTicketRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,13 +32,6 @@ class ReplaceTicketRequest extends FormRequest
         }
 
         return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'data.attributes.status.in' => 'The status field must be one of the following values: A, C, H, X.',
-        ];
     }
 }
 
