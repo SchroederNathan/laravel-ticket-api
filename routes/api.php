@@ -14,12 +14,24 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Version 1 API routes
 Route::prefix('v1')->group(function () {
-    Route::middleware('auth:sanctum')->apiResource('tickets', controller: TicketController::class);
-    Route::middleware('auth:sanctum')->apiResource('authors', controller: AuthorsController::class);
-    Route::middleware('auth:sanctum')->apiResource('authors.tickets', controller: AuthorTicketsController::class);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::apiResource('tickets', controller: TicketController::class)->except(['update']);
+        Route::put('tickets/{ticket}', [TicketController::class, 'replace']);
+
+
+        Route::apiResource('authors', controller: AuthorsController::class);
+        Route::apiResource('authors.tickets', controller: AuthorTicketsController::class)->except(['update']);
+        Route::put('authors/{author}/tickets/{ticket}', [AuthorTicketsController::class, 'replace']);
+
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
+
+
+        Route::post('/logout', [AuthController::class, 'logout']);
+    });
 
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-
-    Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 });
