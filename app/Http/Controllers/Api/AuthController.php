@@ -31,7 +31,7 @@ class AuthController extends Controller
             [
                 'token' => $user->createToken(
                     'API TOKEN of' . $user->email,
-                    ['*'],
+                    Abilities::getAbilities($user),
                     now()->addMonth()
                 )->plainTextToken,
             ]
