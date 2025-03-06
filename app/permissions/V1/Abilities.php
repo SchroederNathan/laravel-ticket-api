@@ -20,7 +20,7 @@ final class Abilities {
     public const DeleteUser = 'user:delete';
 
     public static function getAbilities(User $user) {
-        // Don't assign an asterisk to the user, it will be used for the manager
+        // don't assign '*'
         if ($user->is_manager) {
             return [
                 self::CreateTicket,
