@@ -12,10 +12,10 @@ use App\Models\User;
 use App\Policies\V1\TicketPolicy;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 class TicketController extends ApiController
 {
     protected $policyClass = TicketPolicy::class;
-
     /**
      * Display a listing of the resource.
      */
@@ -32,9 +32,14 @@ class TicketController extends ApiController
         try {
             $user = User::findOrFail($request->input('data.relationships.author.data.id'));
 
-        } catch (ModelNotFoundException $e) {
+            // policy
+            $this->isAble('store', null);
+
+            // TODO: create ticket
+
+        } catch (ModelNotFoundException $exception) {
             return $this->ok('User not found', [
-                'error' => 'User ID not found',
+                'error' => 'The provided user id does not exists'
             ]);
         }
 
@@ -54,8 +59,8 @@ class TicketController extends ApiController
             }
 
             return new TicketResource($ticket);
-        } catch (ModelNotFoundException $e) {
-            return $this->error('Cannot find ticket', 404);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Ticket cannot be found.', 404);
         }
     }
 
@@ -70,9 +75,9 @@ class TicketController extends ApiController
 
             // policy
             $this->isAble('update', $ticket);
-
+            
             $ticket->update($request->mappedAttributes());
-
+    
             return new TicketResource($ticket);
         } catch (ModelNotFoundException $exception) {
             return $this->error('Ticket cannot be found.', 404);
@@ -81,16 +86,20 @@ class TicketController extends ApiController
         }
     }
 
-    public function replace(ReplaceTicketRequest $request, $ticket_id)
-    {
+    public function replace(ReplaceTicketRequest $request, $ticket_id) {
+        // PUT
         try {
             $ticket = Ticket::findOrFail($ticket_id);
 
+            // policy
+            $this->isAble('replace', $ticket);
+
             $ticket->update($request->mappedAttributes());
 
+    
             return new TicketResource($ticket);
-        } catch (ModelNotFoundException $e) {
-            return $this->error('Ticket not found', 404);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Ticket cannot be found.', 404);
         }
     }
 
@@ -101,11 +110,15 @@ class TicketController extends ApiController
     {
         try {
             $ticket = Ticket::findOrFail($ticket_id);
+
+            // policy
+            $this->isAble('delete', $ticket);
+
             $ticket->delete();
 
-            return $this->ok('Ticket deleted successfully');
-        } catch (ModelNotFoundException $e) {
-            return $this->error('Cannot find ticket', 404);
+            return $this->ok('Ticket successfully deleted');
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Ticket cannot found.', 404);
         }
     }
 }
