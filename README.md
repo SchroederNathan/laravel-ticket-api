@@ -1,7 +1,5 @@
 # Ticket Management API 🎫
 
-## What's Is It?
-
 A RESTful API for managing support tickets built in Laravel. It allows users to create, update, and track tickets, with different permission levels for regular users and managers.
 
 ## Features
@@ -11,7 +9,7 @@ A RESTful API for managing support tickets built in Laravel. It allows users to 
 -   **Role-based Permissions**: Different capabilities for managers and regular users
 -   **Validation & Error Handling**: Request validation and error responses
 
-## Tech Stack
+## The Stack
 
 -   **Framework**: Laravel 12
 -   **Database**: MySQL
